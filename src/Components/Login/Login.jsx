@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaUser, FaLock } from "react-icons/fa";
+import { FaLock, FaUser } from "react-icons/fa";
 import "./Login.css";
 
 const Login = () => {
@@ -19,7 +19,7 @@ const Login = () => {
   return (
     <div className="container">
       <form onSubmit={handleSubmit}>
-        <h1>Acesse o sistema</h1>
+        <h1>Login</h1>
         <div className="input-field">
           <input
             type="text"
@@ -41,17 +41,10 @@ const Login = () => {
           <FaLock className="icon" />
         </div>
 
-        <div className="recall-forget">
-          <label>
-            <input type="checkbox" />
-            Lembre de mim
-          </label>
-          <a href="#">Esqueceu sua senha?</a>
-        </div>
         <button type="submit">Login</button>
         <div className="signup-link">
           <p>
-            Não tem uma conta? <a href="#">Registre-se</a>{" "}
+            Não possui uma conta? <a href="#">Registre-se</a>{" "}
           </p>
         </div>
       </form>
