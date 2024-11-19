@@ -2,17 +2,13 @@ import { useState } from "react";
 import { FaLock, FaUser } from "react-icons/fa";
 import "./Login.css";
 
+
 const Login = () => {
-  // Estados para armazenar as entradas do usuário
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // Função que é chamada quando o formulário é enviado
   const handleSubmit = (event) => {
-    // Impede que a página seja recarregada
     event.preventDefault();
-
-    // Faz o console log das credenciais do usuário
     console.log("Dados de Login:", { username, password });
   };
 
@@ -28,7 +24,7 @@ const Login = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-          <FaUser className="icon" />
+          <FaUser  className="icon" />
         </div>
         <div className="input-field">
           <input
@@ -40,11 +36,13 @@ const Login = () => {
           />
           <FaLock className="icon" />
         </div>
-
+        <div className="recall-forget">
+          <a href="#">Esqueceu a senha?</a>
+        </div>
         <button type="submit">Login</button>
         <div className="signup-link">
           <p>
-            Não possui uma conta? <a href="#">Registre-se</a>{" "}
+            Não possui uma conta? <a href="#">Registre-se</a>
           </p>
         </div>
       </form>
