@@ -2,13 +2,19 @@ import React, { useState } from "react";
 import { TextField, Box, Button, Typography, Link, InputAdornment } from "@mui/material";
 import { FaLock, FaUser } from "react-icons/fa";
 
-const Login = () => {
-  const [username, setUsername] = useState("");
+const Register = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Dados de Login:", { username, password });
+    if (password !== confirmPassword) {
+      alert("As senhas não coincidem!");
+      return;
+    }
+    console.log("Dados de Registro:", { name, email, password });
   };
 
   return (
@@ -25,7 +31,7 @@ const Login = () => {
       }}
     >
       <Typography variant="h4" component="h1" sx={{ marginBottom: 2, color: "#333" }}>
-        Login
+        Registre-se
       </Typography>
       <Box
         component="form"
@@ -35,9 +41,23 @@ const Login = () => {
         <TextField
           fullWidth
           variant="outlined"
+          placeholder="Nome"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <FaUser style={{ color: "#F54749" }} />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <TextField
+          fullWidth
+          variant="outlined"
           placeholder="E-mail"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -61,19 +81,21 @@ const Login = () => {
             ),
           }}
         />
-        <Link
-          href="#"
-          underline="hover"
-          sx={{
-            display: "block",
-            textAlign: "right",
-            fontSize: "14px",
-            marginTop: "-10px",
-            color: "#F54749",
+        <TextField
+          fullWidth
+          variant="outlined"
+          type="password"
+          placeholder="Confirmar Senha"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <FaLock style={{ color: "#F54749" }} />
+              </InputAdornment>
+            ),
           }}
-        >
-          Esqueceu a senha?
-        </Link>
+        />
         <Button
           type="submit"
           fullWidth
@@ -88,12 +110,12 @@ const Login = () => {
             },
           }}
         >
-          Login
+          Registrar
         </Button>
         <Typography sx={{ fontSize: "14.5px", marginTop: 2 }}>
-          Não possui uma conta?{" "}
-          <Link href="/register" underline="hover" sx={{ color: "#F54749", fontWeight: "800" }}>
-            Registre-se
+          Já possui uma conta?{" "}
+          <Link href="/login" underline="hover" sx={{ color: "#F54749", fontWeight: "800" }}>
+            Login
           </Link>
         </Typography>
       </Box>
@@ -101,4 +123,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
