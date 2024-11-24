@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { Category } from "./Category";
 
-@Entity()
+@Entity("products") 
 export class Product {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -9,14 +9,14 @@ export class Product {
   @Column()
   name!: string;
 
-  @Column("decimal")
+  @Column("decimal", { precision: 10, scale: 2 })
   price!: number;
 
   @Column()
   description!: string;
 
-  @ManyToOne(() => Category, (category) => category.products)
-  category!: Category;
+  @ManyToOne(() => Category, (category) => category.products, { nullable: true })
+  category!: Category | null;
 
   @Column({ default: true })
   isActive!: boolean;
