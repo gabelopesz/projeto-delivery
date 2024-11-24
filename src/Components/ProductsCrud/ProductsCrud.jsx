@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Typography,
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -12,53 +11,19 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+import AddProducts from "./AddProducts";
 
 const ProductCRUD = () => {
   const [products, setProducts] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState({
-    id: null,
-    name: "",
-    price: "",
-    stock: "",
-  });
-  const [isEditing, setIsEditing] = useState(false);
+  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [nextId, setNextId] = useState(1);
 
-  const handleOpenDialog = (product = { id: null, name: "", price: "", stock: "" }) => {
-    setIsEditing(!!product.id);
-    setCurrentProduct(product);
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setCurrentProduct({ id: null, name: "", price: "", stock: "" });
-  };
-
-  const handleSaveProduct = () => {
-    if (isEditing) {
-      setProducts((prev) =>
-        prev.map((product) =>
-          product.id === currentProduct.id ? currentProduct : product
-        )
-      );
-    } else {
-      setProducts((prev) => [
-        ...prev,
-        { ...currentProduct, id: Date.now() }, // Generate unique ID
-      ]);
-    }
-    handleCloseDialog();
-  };
-
-  const handleDeleteProduct = (id) => {
-    setProducts((prev) => prev.filter((product) => product.id !== id));
+  const handleAddProduct = (newProduct) => {
+    setProducts((prev) => [...prev, newProduct]);
+    setNextId((prev) => prev + 1); // Increment ID counter
+    setShowAddProduct(false);
   };
 
   return (
@@ -79,113 +44,65 @@ const ProductCRUD = () => {
           marginBottom: 2,
           textAlign: "center",
           color: "#80869A",
-          boxShadow: "none",
-          outline: "none",
         }}
       >
         Gerenciamento de Produtos
       </Typography>
-      <Button
-        variant="contained"
-        sx={{
-          marginBottom: 2,
-          backgroundColor: "#F54749",
-          "&:hover": { backgroundColor: "#D63939" },
-        }}
-        onClick={() => handleOpenDialog()}
-      >
-        Adicionar Produto
-      </Button>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Nome</TableCell>
-              <TableCell>Preço</TableCell>
-              <TableCell>Estoque</TableCell>
-              <TableCell align="center">Ações</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {products.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.id}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.price}</TableCell>
-                <TableCell>{product.stock}</TableCell>
-                <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleOpenDialog(product)}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => handleDeleteProduct(product.id)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Dialog for Add/Edit Product */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {isEditing ? "Editar Produto" : "Adicionar Produto"}
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            label="Nome"
-            margin="dense"
-            value={currentProduct.name}
-            onChange={(e) =>
-              setCurrentProduct({ ...currentProduct, name: e.target.value })
-            }
-          />
-          <TextField
-            fullWidth
-            label="Preço"
-            margin="dense"
-            type="number"
-            value={currentProduct.price}
-            onChange={(e) =>
-              setCurrentProduct({ ...currentProduct, price: e.target.value })
-            }
-          />
-          <TextField
-            fullWidth
-            label="Estoque"
-            margin="dense"
-            type="number"
-            value={currentProduct.stock}
-            onChange={(e) =>
-              setCurrentProduct({ ...currentProduct, stock: e.target.value })
-            }
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="secondary">
-            Cancelar
-          </Button>
+      {!showAddProduct ? (
+        <>
           <Button
             variant="contained"
-            onClick={handleSaveProduct}
             sx={{
+              marginBottom: 2,
               backgroundColor: "#F54749",
               "&:hover": { backgroundColor: "#D63939" },
             }}
+            onClick={() => setShowAddProduct(true)}
           >
-            Salvar
+            Adicionar Produto
           </Button>
-        </DialogActions>
-      </Dialog>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Nome</TableCell>
+                  <TableCell>Preço</TableCell>
+                  <TableCell>Estoque</TableCell>
+                  <TableCell align="center">Ações</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {products.map((product) => (
+                  <TableRow key={product.id}>
+                    <TableCell>{product.id}</TableCell>
+                    <TableCell>{product.name}</TableCell>
+                    <TableCell>{product.price}</TableCell>
+                    <TableCell>{product.stock}</TableCell>
+                    <TableCell align="center">
+                      <IconButton color="primary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        color="secondary"
+                        onClick={() =>
+                          setProducts((prev) =>
+                            prev.filter((p) => p.id !== product.id)
+                          )
+                        }
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      ) : (
+        <AddProducts onAdd={handleAddProduct} nextId={nextId} />
+      )}
     </Box>
   );
 };

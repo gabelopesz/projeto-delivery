@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Typography,
-  TextField,
   Table,
   TableBody,
   TableCell,
@@ -12,53 +11,19 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
+import AddCoupon from "./AddCoupon";
 
 const CouponCRUD = () => {
   const [coupons, setCoupons] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [currentCoupon, setCurrentCoupon] = useState({
-    id: null,
-    code: "",
-    discount: "",
-    expirationDate: "",
-  });
-  const [isEditing, setIsEditing] = useState(false);
+  const [showAddCoupon, setShowAddCoupon] = useState(false);
+  const [nextId, setNextId] = useState(1);
 
-  const handleOpenDialog = (coupon = { id: null, code: "", discount: "", expirationDate: "" }) => {
-    setIsEditing(!!coupon.id);
-    setCurrentCoupon(coupon);
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setCurrentCoupon({ id: null, code: "", discount: "", expirationDate: "" });
-  };
-
-  const handleSaveCoupon = () => {
-    if (isEditing) {
-      setCoupons((prev) =>
-        prev.map((coupon) =>
-          coupon.id === currentCoupon.id ? currentCoupon : coupon
-        )
-      );
-    } else {
-      setCoupons((prev) => [
-        ...prev,
-        { ...currentCoupon, id: Date.now() }, // Generate unique ID
-      ]);
-    }
-    handleCloseDialog();
-  };
-
-  const handleDeleteCoupon = (id) => {
-    setCoupons((prev) => prev.filter((coupon) => coupon.id !== id));
+  const handleAddCoupon = (newCoupon) => {
+    setCoupons((prev) => [...prev, newCoupon]);
+    setNextId((prev) => prev + 1); // Increment ID counter
+    setShowAddCoupon(false);
   };
 
   return (
@@ -79,116 +44,65 @@ const CouponCRUD = () => {
           marginBottom: 2,
           textAlign: "center",
           color: "#80869A",
-          boxShadow: "none",
-          outline: "none",
         }}
       >
         Gerenciamento de Cupons
       </Typography>
-      <Button
-        variant="contained"
-        sx={{
-          marginBottom: 2,
-          backgroundColor: "#F54749",
-          "&:hover": { backgroundColor: "#D63939" },
-        }}
-        onClick={() => handleOpenDialog()}
-      >
-        Adicionar Cupom
-      </Button>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Código</TableCell>
-              <TableCell>Desconto (%)</TableCell>
-              <TableCell>Data de Expiração</TableCell>
-              <TableCell align="center">Ações</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {coupons.map((coupon) => (
-              <TableRow key={coupon.id}>
-                <TableCell>{coupon.id}</TableCell>
-                <TableCell>{coupon.code}</TableCell>
-                <TableCell>{coupon.discount}</TableCell>
-                <TableCell>{coupon.expirationDate}</TableCell>
-                <TableCell align="center">
-                  <IconButton
-                    color="primary"
-                    onClick={() => handleOpenDialog(coupon)}
-                  >
-                    <Edit />
-                  </IconButton>
-                  <IconButton
-                    color="secondary"
-                    onClick={() => handleDeleteCoupon(coupon.id)}
-                  >
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Dialog for Add/Edit Coupon */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>{isEditing ? "Editar Cupom" : "Adicionar Cupom"}</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            label="Código"
-            margin="dense"
-            value={currentCoupon.code}
-            onChange={(e) =>
-              setCurrentCoupon({ ...currentCoupon, code: e.target.value })
-            }
-          />
-          <TextField
-            fullWidth
-            label="Desconto (%)"
-            margin="dense"
-            value={currentCoupon.discount}
-            onChange={(e) =>
-              setCurrentCoupon({ ...currentCoupon, discount: e.target.value })
-            }
-          />
-          <TextField
-            fullWidth
-            label="Data de Expiração"
-            margin="dense"
-            type="date"
-            value={currentCoupon.expirationDate}
-            onChange={(e) =>
-              setCurrentCoupon({
-                ...currentCoupon,
-                expirationDate: e.target.value,
-              })
-            }
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="secondary">
-            Cancelar
-          </Button>
+      {!showAddCoupon ? (
+        <>
           <Button
             variant="contained"
-            onClick={handleSaveCoupon}
             sx={{
+              marginBottom: 2,
               backgroundColor: "#F54749",
               "&:hover": { backgroundColor: "#D63939" },
             }}
+            onClick={() => setShowAddCoupon(true)}
           >
-            Salvar
+            Adicionar Cupom
           </Button>
-        </DialogActions>
-      </Dialog>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>ID</TableCell>
+                  <TableCell>Código</TableCell>
+                  <TableCell>Desconto (%)</TableCell>
+                  <TableCell>Data de Expiração</TableCell>
+                  <TableCell align="center">Ações</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {coupons.map((coupon) => (
+                  <TableRow key={coupon.id}>
+                    <TableCell>{coupon.id}</TableCell>
+                    <TableCell>{coupon.code}</TableCell>
+                    <TableCell>{coupon.discount}</TableCell>
+                    <TableCell>{coupon.expirationDate}</TableCell>
+                    <TableCell align="center">
+                      <IconButton color="primary">
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        color="secondary"
+                        onClick={() =>
+                          setCoupons((prev) =>
+                            prev.filter((c) => c.id !== coupon.id)
+                          )
+                        }
+                      >
+                        <Delete />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      ) : (
+        <AddCoupon onAdd={handleAddCoupon} nextId={nextId} />
+      )}
     </Box>
   );
 };
