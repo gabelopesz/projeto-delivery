@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -13,6 +14,7 @@ const AddCoupon = ({ onAdd, nextId }) => {
     discount: "",
     expirationDate: "",
   });
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,7 +29,7 @@ const AddCoupon = ({ onAdd, nextId }) => {
       formData.expirationDate.trim()
     ) {
       onAdd({ ...formData, id: nextId });
-      setFormData({ code: "", discount: "", expirationDate: "" });
+      navigate("/"); // Navigate back to CouponCRUD
     } else {
       alert("Por favor, preencha todos os campos.");
     }

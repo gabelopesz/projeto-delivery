@@ -13,17 +13,14 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import AddCoupon from "./AddCoupon";
+import { useNavigate } from "react-router-dom";
 
-const CouponCRUD = () => {
+const CouponCrud = () => {
   const [coupons, setCoupons] = useState([]);
-  const [showAddCoupon, setShowAddCoupon] = useState(false);
-  const [nextId, setNextId] = useState(1);
+  const navigate = useNavigate(); // Hook for navigation
 
-  const handleAddCoupon = (newCoupon) => {
-    setCoupons((prev) => [...prev, newCoupon]);
-    setNextId((prev) => prev + 1); // Increment ID counter
-    setShowAddCoupon(false);
+  const handleDeleteCoupon = (id) => {
+    setCoupons((prev) => prev.filter((coupon) => coupon.id !== id));
   };
 
   return (
@@ -48,63 +45,53 @@ const CouponCRUD = () => {
       >
         Gerenciamento de Cupons
       </Typography>
-      {!showAddCoupon ? (
-        <>
-          <Button
-            variant="contained"
-            sx={{
-              marginBottom: 2,
-              backgroundColor: "#F54749",
-              "&:hover": { backgroundColor: "#D63939" },
-            }}
-            onClick={() => setShowAddCoupon(true)}
-          >
-            Adicionar Cupom
-          </Button>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Código</TableCell>
-                  <TableCell>Desconto (%)</TableCell>
-                  <TableCell>Data de Expiração</TableCell>
-                  <TableCell align="center">Ações</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {coupons.map((coupon) => (
-                  <TableRow key={coupon.id}>
-                    <TableCell>{coupon.id}</TableCell>
-                    <TableCell>{coupon.code}</TableCell>
-                    <TableCell>{coupon.discount}</TableCell>
-                    <TableCell>{coupon.expirationDate}</TableCell>
-                    <TableCell align="center">
-                      <IconButton color="primary">
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        color="secondary"
-                        onClick={() =>
-                          setCoupons((prev) =>
-                            prev.filter((c) => c.id !== coupon.id)
-                          )
-                        }
-                      >
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
-      ) : (
-        <AddCoupon onAdd={handleAddCoupon} nextId={nextId} />
-      )}
+      <Button
+        variant="contained"
+        sx={{
+          marginBottom: 2,
+          backgroundColor: "#F54749",
+          "&:hover": { backgroundColor: "#D63939" },
+        }}
+        onClick={() => navigate("/add-coupon")} // Navigate to AddCoupon page
+      >
+        Adicionar Cupom
+      </Button>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Código</TableCell>
+              <TableCell>Desconto (%)</TableCell>
+              <TableCell>Data de Expiração</TableCell>
+              <TableCell align="center">Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {coupons.map((coupon) => (
+              <TableRow key={coupon.id}>
+                <TableCell>{coupon.id}</TableCell>
+                <TableCell>{coupon.code}</TableCell>
+                <TableCell>{coupon.discount}</TableCell>
+                <TableCell>{coupon.expirationDate}</TableCell>
+                <TableCell align="center">
+                  <IconButton color="primary">
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleDeleteCoupon(coupon.id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };
 
-export default CouponCRUD;
+export default CouponCrud;

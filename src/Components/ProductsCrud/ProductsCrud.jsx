@@ -13,17 +13,14 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import AddProducts from "./AddProducts";
+import { useNavigate } from "react-router-dom";
 
-const ProductCRUD = () => {
+const ProductsCrud = () => {
   const [products, setProducts] = useState([]);
-  const [showAddProduct, setShowAddProduct] = useState(false);
-  const [nextId, setNextId] = useState(1);
+  const navigate = useNavigate(); // For navigation
 
-  const handleAddProduct = (newProduct) => {
-    setProducts((prev) => [...prev, newProduct]);
-    setNextId((prev) => prev + 1); // Increment ID counter
-    setShowAddProduct(false);
+  const handleDeleteProduct = (id) => {
+    setProducts((prev) => prev.filter((product) => product.id !== id));
   };
 
   return (
@@ -48,63 +45,53 @@ const ProductCRUD = () => {
       >
         Gerenciamento de Produtos
       </Typography>
-      {!showAddProduct ? (
-        <>
-          <Button
-            variant="contained"
-            sx={{
-              marginBottom: 2,
-              backgroundColor: "#F54749",
-              "&:hover": { backgroundColor: "#D63939" },
-            }}
-            onClick={() => setShowAddProduct(true)}
-          >
-            Adicionar Produto
-          </Button>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Nome</TableCell>
-                  <TableCell>Preço</TableCell>
-                  <TableCell>Estoque</TableCell>
-                  <TableCell align="center">Ações</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {products.map((product) => (
-                  <TableRow key={product.id}>
-                    <TableCell>{product.id}</TableCell>
-                    <TableCell>{product.name}</TableCell>
-                    <TableCell>{product.price}</TableCell>
-                    <TableCell>{product.stock}</TableCell>
-                    <TableCell align="center">
-                      <IconButton color="primary">
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        color="secondary"
-                        onClick={() =>
-                          setProducts((prev) =>
-                            prev.filter((p) => p.id !== product.id)
-                          )
-                        }
-                      >
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
-      ) : (
-        <AddProducts onAdd={handleAddProduct} nextId={nextId} />
-      )}
+      <Button
+        variant="contained"
+        sx={{
+          marginBottom: 2,
+          backgroundColor: "#F54749",
+          "&:hover": { backgroundColor: "#D63939" },
+        }}
+        onClick={() => navigate("/add-product")} // Navigate to AddProducts
+      >
+        Adicionar Produto
+      </Button>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Nome</TableCell>
+              <TableCell>Preço</TableCell>
+              <TableCell>Estoque</TableCell>
+              <TableCell align="center">Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {products.map((product) => (
+              <TableRow key={product.id}>
+                <TableCell>{product.id}</TableCell>
+                <TableCell>{product.name}</TableCell>
+                <TableCell>{product.price}</TableCell>
+                <TableCell>{product.stock}</TableCell>
+                <TableCell align="center">
+                  <IconButton color="primary">
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleDeleteProduct(product.id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };
 
-export default ProductCRUD;
+export default ProductsCrud;

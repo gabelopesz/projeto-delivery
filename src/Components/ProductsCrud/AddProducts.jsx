@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -13,6 +14,7 @@ const AddProducts = ({ onAdd, nextId }) => {
     price: "",
     stock: "",
   });
+  const navigate = useNavigate(); // For navigation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -23,7 +25,7 @@ const AddProducts = ({ onAdd, nextId }) => {
     e.preventDefault();
     if (formData.name.trim() && formData.price.trim() && formData.stock.trim()) {
       onAdd({ ...formData, id: nextId });
-      setFormData({ name: "", price: "", stock: "" });
+      navigate("/"); // Navigate back to ProductCRUD
     } else {
       alert("Por favor, preencha todos os campos.");
     }

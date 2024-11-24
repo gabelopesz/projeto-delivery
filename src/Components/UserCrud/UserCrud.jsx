@@ -13,17 +13,14 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, Delete } from "@mui/icons-material";
-import AddUser from "./AddUser";
+import { useNavigate } from "react-router-dom";
 
 const UserCRUD = () => {
   const [users, setUsers] = useState([]);
-  const [showAddUser, setShowAddUser] = useState(false);
-  const [nextId, setNextId] = useState(1); // Initial ID count
+  const navigate = useNavigate(); // Navigation hook
 
-  const handleAddUser = (newUser) => {
-    setUsers((prev) => [...prev, newUser]);
-    setNextId((prev) => prev + 1); // Increment ID counter
-    setShowAddUser(false);
+  const handleDeleteUser = (id) => {
+    setUsers((prev) => prev.filter((user) => user.id !== id));
   };
 
   return (
@@ -48,61 +45,51 @@ const UserCRUD = () => {
       >
         Gerenciamento de Usuários
       </Typography>
-      {!showAddUser ? (
-        <>
-          <Button
-            variant="contained"
-            sx={{
-              marginBottom: 2,
-              backgroundColor: "#F54749",
-              "&:hover": { backgroundColor: "#D63939" },
-            }}
-            onClick={() => setShowAddUser(true)}
-          >
-            Adicionar Usuário
-          </Button>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Nome</TableCell>
-                  <TableCell>E-mail</TableCell>
-                  <TableCell>Senha</TableCell>
-                  <TableCell align="center">Ações</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>{user.id}</TableCell>
-                    <TableCell>{user.name}</TableCell>
-                    <TableCell>{user.email}</TableCell>
-                    <TableCell>{"*".repeat(8)}</TableCell> {/* Hidden password */}
-                    <TableCell align="center">
-                      <IconButton color="primary">
-                        <Edit />
-                      </IconButton>
-                      <IconButton
-                        color="secondary"
-                        onClick={() =>
-                          setUsers((prev) =>
-                            prev.filter((u) => u.id !== user.id)
-                          )
-                        }
-                      >
-                        <Delete />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </>
-      ) : (
-        <AddUser onAdd={handleAddUser} nextId={nextId} />
-      )}
+      <Button
+        variant="contained"
+        sx={{
+          marginBottom: 2,
+          backgroundColor: "#F54749",
+          "&:hover": { backgroundColor: "#D63939" },
+        }}
+        onClick={() => navigate("/add-user")} // Navigate to AddUser page
+      >
+        Adicionar Usuário
+      </Button>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>ID</TableCell>
+              <TableCell>Nome</TableCell>
+              <TableCell>E-mail</TableCell>
+              <TableCell>Senha</TableCell>
+              <TableCell align="center">Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users.map((user) => (
+              <TableRow key={user.id}>
+                <TableCell>{user.id}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{"*".repeat(8)}</TableCell> {/* Hidden password */}
+                <TableCell align="center">
+                  <IconButton color="primary">
+                    <Edit />
+                  </IconButton>
+                  <IconButton
+                    color="secondary"
+                    onClick={() => handleDeleteUser(user.id)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };

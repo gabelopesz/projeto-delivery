@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -12,6 +13,7 @@ const AddCategories = ({ onAdd, nextId }) => {
     name: "",
     description: "",
   });
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +24,7 @@ const AddCategories = ({ onAdd, nextId }) => {
     e.preventDefault();
     if (formData.name.trim() && formData.description.trim()) {
       onAdd({ ...formData, id: nextId });
-      setFormData({ name: "", description: "" });
+      navigate("/"); // Navigate back to CategoriesCrud
     } else {
       alert("Por favor, preencha todos os campos.");
     }
