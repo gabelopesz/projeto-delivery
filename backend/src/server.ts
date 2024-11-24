@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { AppDataSource } from "./config/database";
 import { productRoutes } from "./routes/productRoutes";
+import { userRoutes } from "./routes/userRoutes";
 
 dotenv.config();
 
@@ -15,8 +16,9 @@ AppDataSource.initialize()
   .then(() => {
     console.log("Banco de dados conectado!");
 
-    // Registrar rotas após a inicialização do banco
+    // Registrar as rotas
     app.use("/products", productRoutes);
+    app.use("/users", userRoutes);
 
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
